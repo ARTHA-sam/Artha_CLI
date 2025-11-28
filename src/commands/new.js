@@ -32,7 +32,9 @@ async function newCommand(projectName, options) {
                 port: 8080
             },
             dependencies: {
-                "lombok": "1.18.34",
+                "gson": "2.10.1",
+                "slf4j-api": "2.0.11",
+                "slf4j-simple": "2.0.11",
                 "jackson": "2.16.1",
                 "jackson-core": "2.16.1",
                 "jackson-annotations": "2.16.1"
@@ -51,9 +53,8 @@ import dev.artha.http.Response;
 
 @Step(path = "/hello", method = "GET")
 public class Hello {
-    public String handle(Request req, Response res) {
-        String name = req.query("name", "World");
-        return "Hello, " + name + "! Welcome to ARTHA 🚀";
+    public String handle() {
+        return "Hello from ARTHA! 🚀";
     }
 }
 `;
