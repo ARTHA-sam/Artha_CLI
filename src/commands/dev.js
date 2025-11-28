@@ -200,6 +200,9 @@ function startServer(runtimeJar, port, dependencyJars = []) {
 
 function findRuntimeJar() {
     const possiblePaths = [
+        // Bundled JAR (Priority for distribution)
+        path.join(__dirname, '..', '..', 'lib', 'artha-runtime.jar'),
+        // Development paths
         path.join(process.cwd(), '..', '..', 'runtime', 'target'),
         path.join(process.cwd(), '..', 'runtime', 'target'),
         path.join(process.cwd(), 'runtime', 'target'),
@@ -207,7 +210,13 @@ function findRuntimeJar() {
         'C:\\Coding\\Java\\Spring\\artha\\runtime\\target'
     ];
     for (const runtimePath of possiblePaths) {
-        if (fs.existsSync(runtimePath)) {
+        // Check if it's a direct file path (bundled) or a directory (dev)
+        if (runtimePath.endsWith('.jar')) {
+            if (fs.existsSync(runtimePath)) {
+                console.log(chalk.green(`✅ Found runtime: ${runtimePath}`));
+                return runtimePath;
+            }
+        } else if (fs.existsSync(runtimePath)) {
             const files = fs.readdirSync(runtimePath);
             const jarFile = files.find(f =>
                 f.startsWith('artha-runtime') &&
