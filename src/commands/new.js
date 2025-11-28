@@ -32,9 +32,7 @@ async function newCommand(projectName, options) {
                 port: 8080
             },
             dependencies: {
-                "gson": "2.10.1",
-                "slf4j-api": "2.0.11",
-                "slf4j-simple": "2.0.11",
+                "lombok": "1.18.34",
                 "jackson": "2.16.1",
                 "jackson-core": "2.16.1",
                 "jackson-annotations": "2.16.1"
@@ -53,8 +51,9 @@ import dev.artha.http.Response;
 
 @Step(path = "/hello", method = "GET")
 public class Hello {
-    public String handle() {
-        return "Hello from ARTHA! 🚀";
+    public String handle(Request req, Response res) {
+        String name = req.query("name", "World");
+        return "Hello, " + name + "! Welcome to ARTHA 🚀";
     }
 }
 `;
@@ -236,23 +235,15 @@ async function createVSCodeConfig(projectPath, runtimeJar) {
 
 function findRuntimeJar() {
     const possiblePaths = [
-        // Bundled JAR (Priority for distribution)
-        path.join(__dirname, '..', '..', 'lib', 'artha-runtime.jar'),
-        // Development paths
-        path.join(process.cwd(), '..', '..', 'runtime', 'target'),
         path.join(process.cwd(), '..', 'runtime', 'target'),
+        path.join(process.cwd(), '..', '..', 'runtime', 'target'),
         path.join(process.cwd(), 'runtime', 'target'),
         path.join(__dirname, '..', '..', '..', 'runtime', 'target'),
         'C:\\Coding\\Java\\Spring\\artha\\runtime\\target'
     ];
 
     for (const runtimePath of possiblePaths) {
-        // Check if it's a direct file path (bundled) or a directory (dev)
-        if (runtimePath.endsWith('.jar')) {
-            if (fs.existsSync(runtimePath)) {
-                return runtimePath;
-            }
-        } else if (fs.existsSync(runtimePath)) {
+        if (fs.existsSync(runtimePath)) {
             const files = fs.readdirSync(runtimePath);
             const jarFile = files.find(f =>
                 f.startsWith('artha-runtime') &&
