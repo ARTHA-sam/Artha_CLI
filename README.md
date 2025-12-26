@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # ARTHA CLI
 
 Interactive command-line tool for ARTHA framework.
