@@ -63,6 +63,13 @@ public class Hello {
             helloJava
         );
 
+        // Copy runtime JAR to project lib folder for IDE support
+        if (runtimeJar) {
+            const libPath = path.join(projectPath, 'lib');
+            await fs.ensureDir(libPath);
+            await fs.copy(runtimeJar, path.join(libPath, 'artha-runtime.jar'));
+        }
+
         // Create .gitignore
         const gitignore = `build/
 .artha/
@@ -210,7 +217,7 @@ async function createVSCodeConfig(projectPath, runtimeJar) {
         "java.project.outputPath": "build",
         "java.project.referencedLibraries": [
             ".artha/lib/**/*.jar",
-            runtimeJar.replace(/\\/g, '/')
+            "lib/artha-runtime.jar"
         ]
     };
 
